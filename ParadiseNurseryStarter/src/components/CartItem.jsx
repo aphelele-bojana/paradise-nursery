@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { removeItem, updateQuantity } from "../redux/CartSlice";
 
 function CartItem() {
-  const items = useSelector(state => state.cart.items);
+  const items = useSelector((state) => state.cart.items);
   const dispatch = useDispatch();
 
   const total = items.reduce(
@@ -17,28 +17,46 @@ function CartItem() {
 
       {items.length === 0 && <p>Your cart is empty</p>}
 
-      {items.map(item => (
+      {items.map((item) => (
         <div key={item.id} className="cart-item">
-          <h4>{item.name}</h4>
-          <p>Price: R{item.price}</p>
+          <img src={item.img} alt={item.name} width="80" />
 
-          <input
-            type="number"
-            value={item.quantity}
-            min="1"
-            onChange={(e) =>
+          <h4>{item.name}</h4>
+          <p>R{item.price}</p>
+
+          <button
+            onClick={() =>
               dispatch(
                 updateQuantity({
                   id: item.id,
-                  quantity: Number(e.target.value)
+                  quantity: item.quantity - 1
                 })
               )
             }
-          />
-
-          <button onClick={() => dispatch(removeItem(item.id))}>
-            Remove
+          >
+            -
           </button>
+
+          <span>{item.quantity}</span>
+
+          <button
+            onClick={() =>
+              dispatch(
+                updateQuantity({
+                  id: item.id,
+                  quantity: item.quantity + 1
+                })
+              )
+            }
+          >
+            +
+          </button>
+
+          {item.quantity <= 1 && (
+            <button onClick={() => dispatch(removeItem(item.id))}>
+              Remove
+            </button>
+          )}
         </div>
       ))}
 
